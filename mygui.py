@@ -60,4 +60,3 @@ class MyGUI:
     def onClick(self, game):
         game.play(self._input.get())
         self.refresh(game)
-        print("odświeżanie")
