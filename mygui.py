@@ -1,17 +1,27 @@
 from tkinter import *
+from myexception import *
 
 class MyGUI:
     def __init__(self, master, game):
         self._master = master
         master.title("Projekt Gomoku")
 
-        self._player = Label(master, text=f"Tura gracza: {game.getCurrentPlayer()}")
+        # Zmienne tekstowe używane w Label aby można było je odświeżać
+        self._playerStr = StringVar()
+        self._boardStr = StringVar()
+        self._infoStr = StringVar()
+        # Ustawienie zmiennych tekstowych
+        self._playerStr.set(f"Tura gracza: {game.getCurrentPlayer()}")
+        self._boardStr.set(self.printBoard(game))
+        self._infoStr.set(game.getOutputInfo())
+
+        self._player = Label(master, textvariable=self._playerStr)
         self._player.grid(row=0, columnspan=2)
 
-        self._board = Label(master, text=self.printBoard(game))
+        self._board = Label(master, textvariable=self._boardStr)
         self._board.grid(row=1, columnspan=2)
 
-        self._info = Label(master, text="Podaj współrzędne (np. b13)")
+        self._info = Label(master, textvariable=self._infoStr)
         self._info.grid(row=2, columnspan=2)
 
         self._input = Entry(master)
@@ -21,20 +31,10 @@ class MyGUI:
         self.submit.grid(sticky=W, row=3, column=1, padx=5, pady=5)
 
     def refresh(self, game):
-        self._player = Label(self._master, text=f"Tura gracza: {game.getCurrentPlayer()}")
-        self._player.grid(row=0, columnspan=2)
-
-        self._board = Label(self._master, text=self.printBoard(game))
-        self._board.grid(row=1, columnspan=2)
-
-        self._info = Label(self._master, text="Podaj współrzędne (np. b13)")
-        self._info.grid(row=2, columnspan=2)
-
-        self._input = Entry(self._master)
-        self._input.grid(sticky=E, row=3, column=0, padx=5, pady=5)
-
-        self.submit = Button(self._master, text="Zatwierdź", command=lambda: self.onClick(game))
-        self.submit.grid(sticky=W, row=3, column=1, padx=5, pady=5)
+        self._playerStr.set(f"Tura gracza: {game.getCurrentPlayer()}")
+        self._boardStr.set(self.printBoard(game))
+        self._infoStr.set(game.getOutputInfo())
+        self._input.delete(0, 'end')
 
     def printBoard(self, game):
         strBoard = '\n'
