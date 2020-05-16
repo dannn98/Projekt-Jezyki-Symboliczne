@@ -16,19 +16,25 @@ class MyGUI:
         self._infoStr.set(game.getOutputInfo())
 
         self._player = Label(master, textvariable=self._playerStr)
-        self._player.grid(row=0, columnspan=2)
+        self._player.grid(row=0, columnspan=4)
 
         self._board = Label(master, textvariable=self._boardStr)
-        self._board.grid(row=1, columnspan=2)
+        self._board.grid(row=1, columnspan=4)
 
         self._info = Label(master, textvariable=self._infoStr)
-        self._info.grid(row=2, columnspan=2)
+        self._info.grid(row=2, columnspan=4)
+
+        self._newGame = Button(master, text="Nowa gra", command=lambda: self.clickNewGame(game))
+        self._newGame.grid(sticky=E, row=3, column=0, padx=5, pady=5)
 
         self._input = Entry(master)
-        self._input.grid(sticky=E, row=3, column=0, padx=5, pady=5)
+        self._input.grid(sticky=E, row=3, column=1, padx=5, pady=5)
 
-        self.submit = Button(master, text="Zatwierdź", command=lambda: self.onClick(game))
-        self.submit.grid(sticky=W, row=3, column=1, padx=5, pady=5)
+        self._submit = Button(master, text="Zatwierdź", command=lambda: self.clickSubmit(game))
+        self._submit.grid(sticky=W, row=3, column=2, padx=5, pady=5)
+
+        self._exit = Button(master, text="Wyjście", command=lambda: exit(0))
+        self._exit.grid(sticky=W, row=3, column=3, padx=5, pady=5)
 
     def refresh(self, game):
         self._playerStr.set(f"Tura gracza: {game.getCurrentPlayer()}")
@@ -57,6 +63,10 @@ class MyGUI:
 
         return strBoard
 
-    def onClick(self, game):
+    def clickSubmit(self, game):
         game.play(self._input.get())
+        self.refresh(game)
+
+    def clickNewGame(self, game):
+        game.newGame()
         self.refresh(game)

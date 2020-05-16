@@ -21,7 +21,7 @@ class MyGame:
     def playerMove(self, wspolrzedne: str):
         if len(wspolrzedne) > 3:
             # Exception
-            raise GlobalException("Podano złe współrzędne!")
+            raise BadCoordinatesException()
         else:
             if len(wspolrzedne) == 3:
                 x = int(wspolrzedne[1:3]) - 1 ######### Tutaj wyskakuje błąd jeśli podamy literę zamiast liczbę
@@ -29,16 +29,19 @@ class MyGame:
                 x = int(wspolrzedne[1]) - 1 ######### Tutaj wyskakuje błąd jeśli podamy literę zamiast liczbę
             else:
                 # Exception
-                raise GlobalException("Podano złe współrzędne!")
+                raise BadCoordinatesException()
             y = ord(wspolrzedne[0]) - 97
             if not (0 <= x <= 14) or not (0 <= y <= 14):
                 # Exception
-                raise GlobalException("Podano złe współrzędne!")
+                raise BadCoordinatesException()
             if self._BOARD[x][y] != '.':
                 # Exception
-                raise GlobalException("Podane pole jest zajęte!")
+                raise FieldOccupiedException()
 
             self._BOARD[x][y] = self._currentPlayer
+
+    def aiMove(self):
+        pass
 
     def statusCheck(self):
         train = 0
@@ -129,6 +132,12 @@ class MyGame:
         else:
             self._currentPlayer = self._BLACK
 
+    def newGame(self):
+        self._currentPlayer = self._BLACK
+        self._outputInfo = self._PLAY
+        self._status = self._PLAY
+        self._BOARD = [['.' for x in range(15)] for y in range(15)]
+
     def getBoard(self):
         return self._BOARD
 
@@ -143,13 +152,27 @@ class MyGame:
 
     def play(self, wspolrzedne: str):
         try:
+            if self.getStatus() != self._PLAY:
+                # Exception
+                raise GameOverException()
             self.playerMove(wspolrzedne)
             self.statusCheck()
+            ### Zakomentować jeśli PvP
+            if self.getStatus() != self._PLAY:
+                # Exception
+                raise GameOverException()
             self.playerSwap()
-        except GlobalException as e:
+            self.aiMove()
+            self.statusCheck()
+            ###
+            self.playerSwap()
+        except BadCoordinatesException as e:
+            self._outputInfo = f'{e.printMessage()} {self.getStatus()}'
+        except FieldOccupiedException as e:
+            self._outputInfo = f'{e.printMessage()} {self.getStatus()}'
+        except GameOverException as e:
+            self._outputInfo = self.getStatus()
+        except UndefinedException as e:
             self._outputInfo = f'{e.printMessage()} {self.getStatus()}'
         else:
-            self._outputInfo = f'        {self.getStatus()}        '
-        # self._BOARD[2][3] = self._currentPlayer
-        # self._BOARD[5][3] = self._currentPlayer
-        # self._currentPlayer = self._WHITE
+            self._outputInfo = self.getStatus()
