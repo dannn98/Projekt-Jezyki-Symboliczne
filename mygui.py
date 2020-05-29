@@ -1,3 +1,4 @@
+import string
 from tkinter import *
 from myexception import *
 
@@ -45,21 +46,22 @@ class MyGUI:
     def printBoard(self, game):
         strBoard = '\n'
         board = game.getBoard()
-        for i in range(16):
+        boardSize = game.getBoardSize()
+        lista = []
+        for i in range(boardSize + 1):
             if i == 0:
-                strBoard += '\t' + '#'
-                for j in range(97, 112):
-                    strBoard += '\t' + chr(j)
+                tmp = ['\t#']
+                tmp += string.ascii_lowercase[:boardSize]
+                tmp.append('\t')
+                lista.append('\t'.join(tmp))
             else:
-                for j in range(16):
-                    if j == 0:
-                        strBoard += '\t' + str(i)
-                    else:
-                        strBoard += '\t' + board[i-1][j-1]
-            if i < 15:
-                strBoard += '\t\n\n\n'
-            else:
-                strBoard += '\t\n'
+                tmp = [f'\t{i}']
+                tmp += board[i - 1][:]
+                tmp.append('\t')
+                lista.append('\t'.join(tmp))
+
+        strBoard += '\n\n\n'.join(lista)
+        strBoard += '\n'
 
         return strBoard
 

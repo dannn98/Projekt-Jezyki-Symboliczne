@@ -3,6 +3,7 @@ from myexception import *
 class MyGame:
 
     ### Plansza i gracze
+    _BOARD_SIZE = 15
     _BOARD = [['.' for x in range(15)] for y in range(15)]
     _BLACK = 'X'
     _WHITE = 'O'
@@ -137,6 +138,9 @@ class MyGame:
         self._outputInfo = self._PLAY
         self._status = self._PLAY
         self._BOARD = [['.' for x in range(15)] for y in range(15)]
+
+    def getBoardSize(self):
+        return self._BOARD_SIZE
 
     def getBoard(self):
         return self._BOARD
