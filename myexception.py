@@ -1,8 +1,4 @@
 class Error(Exception):
-        pass
-
-
-class UndefinedException(Error):
     def __init__(self, message: str):
         self._message = message
 
@@ -10,22 +6,20 @@ class UndefinedException(Error):
         return self._message
 
 
+class UndefinedException(Error):
+    pass
+
+
 class BadCoordinatesException(Error):
     def __init__(self):
-        self._message = "Podano złe współrzędne!"
-
-    def printMessage(self):
-        return self._message
+        super().__init__("Podano złe współrzędne!")
 
 
 class FieldOccupiedException(Error):
     def __init__(self):
-        self._message = "Podane pole jest zajęte!"
-
-    def printMessage(self):
-        return self._message
+        super().__init__("Podane pole jest zajęte!")
 
 
 class GameOverException(Error):
     def __init__(self):
-        pass
+        super().__init__("KONIEC GRY!")

@@ -5,6 +5,7 @@ class MyGame:
     ### Plansza i gracze
     _BOARD_SIZE = 15
     _BOARD = [['.' for x in range(15)] for y in range(15)]
+    _EMPTY = '.'
     _BLACK = 'X'
     _WHITE = 'O'
 
@@ -31,7 +32,7 @@ class MyGame:
             else:
                 # Exception
                 raise BadCoordinatesException()
-            y = ord(wspolrzedne[0]) - 97
+            y = ord(wspolrzedne[0]) - ord('a')
             if not (0 <= x <= 14) or not (0 <= y <= 14):
                 # Exception
                 raise BadCoordinatesException()
@@ -175,7 +176,7 @@ class MyGame:
         except FieldOccupiedException as e:
             self._outputInfo = f'{e.printMessage()} {self.getStatus()}'
         except GameOverException as e:
-            self._outputInfo = self.getStatus()
+            self._outputInfo = f'{e.printMessage()} {self.getStatus()}'
         except UndefinedException as e:
             self._outputInfo = f'{e.printMessage()} {self.getStatus()}'
         else:

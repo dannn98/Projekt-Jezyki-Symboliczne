@@ -6,11 +6,9 @@ from myexception import *
 def main():
     game = MyGame()
     root = Tk()
-    Window = MyGUI(root, game)
+    MyGUI(root, game)
     root.mainloop()
 
 
-main()
-
-
-
+if __name__ == '__main__':
+    main()
