@@ -1,6 +1,6 @@
 from mygame import *
 from mygui import *
-from myexception import *
+# from myexception import *
 
 
 def main():

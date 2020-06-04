@@ -1,15 +1,16 @@
 from myexception import *
 
+
 class MyGame:
 
-    ### Plansza i gracze
+    # Plansza i gracze
     _BOARD_SIZE = 15
     _BOARD = [['.' for x in range(15)] for y in range(15)]
     _EMPTY = '.'
     _BLACK = 'X'
     _WHITE = 'O'
 
-    ### Statusy gry
+    # Statusy gry
     _PLAY = "Podaj współrzędne (np. b13)"
     _DRAW = "REMIS!"
     _BLACK_WON = "CZARNE WYGRAŁY!"
@@ -17,18 +18,18 @@ class MyGame:
 
     def __init__(self):
         self._status = self._PLAY
-        self._currentPlayer = self._BLACK
-        self._outputInfo = self._status
+        self._current_player = self._BLACK
+        self._output_info = self._status
 
-    def playerMove(self, wspolrzedne: str):
+    def player_move(self, wspolrzedne: str):
         if len(wspolrzedne) > 3:
             # Exception
             raise BadCoordinatesException()
         else:
             if len(wspolrzedne) == 3:
-                x = int(wspolrzedne[1:3]) - 1 ######### Tutaj wyskakuje błąd jeśli podamy literę zamiast liczbę
+                x = int(wspolrzedne[1:3]) - 1  # Tutaj wyskakuje błąd jeśli podamy literę zamiast liczbę
             elif len(wspolrzedne) == 2:
-                x = int(wspolrzedne[1]) - 1 ######### Tutaj wyskakuje błąd jeśli podamy literę zamiast liczbę
+                x = int(wspolrzedne[1]) - 1  # Tutaj wyskakuje błąd jeśli podamy literę zamiast liczbę
             else:
                 # Exception
                 raise BadCoordinatesException()
@@ -40,24 +41,24 @@ class MyGame:
                 # Exception
                 raise FieldOccupiedException()
 
-            self._BOARD[x][y] = self._currentPlayer
+            self._BOARD[x][y] = self._current_player
 
-    def aiMove(self):
+    def ai_move(self):
         pass
 
-    def statusCheck(self):
+    def status_check(self):
         train = 0
         win = 0
         draw = 1
 
         for i in range(0, 15):
             for j in range(0, 15):
-                if self._BOARD[i][j] == self._currentPlayer:
+                if self._BOARD[i][j] == self._current_player:
                     train += 1
                     if train == 5:
                         win = 1
                         break
-                elif self._BOARD[i][j] == '.':
+                elif self._BOARD[i][j] == self._EMPTY: ############
                     train = 0
                     draw = 0
                 else:
@@ -67,7 +68,7 @@ class MyGame:
         train = 0
         for i in range(0, 15):
             for j in range(0, 15):
-                if self._BOARD[j][i] == self._currentPlayer:
+                if self._BOARD[j][i] == self._current_player:
                     train += 1
                     if train == 5:
                         win = 1
@@ -78,7 +79,7 @@ class MyGame:
 
         for i in range(0, 15):
             for j in range(0, i + 1):
-                if self._BOARD[i - j][j] == self._currentPlayer:
+                if self._BOARD[i - j][j] == self._current_player:
                     train += 1
                     if train == 5:
                         win = 1
@@ -89,7 +90,7 @@ class MyGame:
 
         for j in range(1, 15):
             for i in range(0, 15 - j):
-                if self._BOARD[14 - i][j + i] == self._currentPlayer:
+                if self._BOARD[14 - i][j + i] == self._current_player:
                     train += 1
                     if train == 5:
                         win = 1
@@ -100,7 +101,7 @@ class MyGame:
 
         for i in range(0, 15):
             for j in range(0, i + 1):
-                if self._BOARD[i - j][14 - j] == self._currentPlayer:
+                if self._BOARD[i - j][14 - j] == self._current_player:
                     train += 1
                     if train == 5:
                         win = 1
@@ -111,7 +112,7 @@ class MyGame:
 
         for j in range(0, 14):
             for i in range(0, j + 1):
-                if self._BOARD[14 - i][j - i] == self._currentPlayer:
+                if self._BOARD[14 - i][j - i] == self._current_player:
                     train += 1
                     if train == 5:
                         win = 1
@@ -121,63 +122,63 @@ class MyGame:
             train = 0
 
         if win == 1:
-            if self._currentPlayer == self._BLACK:
+            if self._current_player == self._BLACK:
                 self._status = self._BLACK_WON
             else:
                 self._status = self._WHITE_WON
         elif draw == 1:
             self._status = self._DRAW
 
-    def playerSwap(self):
-        if self._currentPlayer == self._BLACK:
-            self._currentPlayer = self._WHITE
+    def player_swap(self):
+        if self._current_player == self._BLACK:
+            self._current_player = self._WHITE
         else:
-            self._currentPlayer = self._BLACK
+            self._current_player = self._BLACK
 
-    def newGame(self):
-        self._currentPlayer = self._BLACK
-        self._outputInfo = self._PLAY
+    def new_game(self):
+        self._current_player = self._BLACK
+        self._output_info = self._PLAY
         self._status = self._PLAY
-        self._BOARD = [['.' for x in range(15)] for y in range(15)]
+        self._BOARD = [[self._EMPTY for x in range(self._BOARD_SIZE)] for y in range(self._BOARD_SIZE)] #############
 
-    def getBoardSize(self):
+    def get_board_size(self):
         return self._BOARD_SIZE
 
-    def getBoard(self):
+    def get_board(self):
         return self._BOARD
 
-    def getStatus(self):
+    def get_status(self):
         return self._status
 
-    def getCurrentPlayer(self):
-        return self._currentPlayer
+    def get_current_player(self):
+        return self._current_player
 
-    def getOutputInfo(self):
-        return self._outputInfo
+    def get_output_info(self):
+        return self._output_info
 
     def play(self, wspolrzedne: str):
         try:
-            if self.getStatus() != self._PLAY:
+            if self.get_status() != self._PLAY:
                 # Exception
                 raise GameOverException()
-            self.playerMove(wspolrzedne)
-            self.statusCheck()
-            ### Zakomentować jeśli PvP
-            if self.getStatus() != self._PLAY:
+            self.player_move(wspolrzedne)
+            self.status_check()
+            # Zakomentować jeśli PvP
+            if self.get_status() != self._PLAY:
                 # Exception
                 raise GameOverException()
-            self.playerSwap()
-            self.aiMove()
-            self.statusCheck()
-            ###
-            self.playerSwap()
+            self.player_swap()
+            self.ai_move()
+            self.status_check()
+            #
+            self.player_swap()
         except BadCoordinatesException as e:
-            self._outputInfo = f'{e.printMessage()} {self.getStatus()}'
+            self._output_info = f'{e.print_message()} {self.get_status()}'
         except FieldOccupiedException as e:
-            self._outputInfo = f'{e.printMessage()} {self.getStatus()}'
+            self._output_info = f'{e.print_message()} {self.get_status()}'
         except GameOverException as e:
-            self._outputInfo = f'{e.printMessage()} {self.getStatus()}'
+            self._output_info = f'{e.print_message()} {self.get_status()}'
         except UndefinedException as e:
-            self._outputInfo = f'{e.printMessage()} {self.getStatus()}'
+            self._output_info = f'{e.print_message()} {self.get_status()}'
         else:
-            self._outputInfo = self.getStatus()
+            self._output_info = self.get_status()
