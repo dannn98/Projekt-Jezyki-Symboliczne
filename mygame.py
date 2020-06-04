@@ -12,6 +12,7 @@ class MyGame:
     _WHITE = 'O'
 
     # Statusy gry
+    GOING_ON, VICTORY, DRAW = range(3)
     _PLAY = "Podaj współrzędne (np. b13)"
     _DRAW = "REMIS!"
     _BLACK_WON = "CZARNE WYGRAŁY!"
@@ -50,91 +51,120 @@ class MyGame:
     def ai_move(self):
         """Funkcja AI gry"""
 
-    def status_check(self):
-        """
-        Funkcja sprawdzająca stan planszy/gry
-        Czy wygrana/przegrana/remis/kontynuacja
-        """
+    def check_method_1(self):
+        """Funkcja sprawdza w poziomie"""
         train = 0
-        win = 0
         draw = 1
-
         for i in range(0, 15):
             for j in range(0, 15):
                 if self._BOARD[i][j] == self._current_player:
                     train += 1
                     if train == 5:
-                        win = 1
-                        break
-                elif self._BOARD[i][j] == self._EMPTY: ############
+                        return self.VICTORY
+                elif self._BOARD[i][j] == self._EMPTY:
                     train = 0
                     draw = 0
                 else:
                     train = 0
             train = 0
+        if draw:
+            return self.DRAW
+        else:
+            return self.GOING_ON
 
+    def check_method_2(self):
+        """Funkcja sprawdza w pionie"""
         train = 0
         for i in range(0, 15):
             for j in range(0, 15):
                 if self._BOARD[j][i] == self._current_player:
                     train += 1
                     if train == 5:
-                        win = 1
-                        break
+                        return self.VICTORY
                 else:
                     train = 0
             train = 0
+        return self.GOING_ON
 
+    def check_method_3(self):
+        """Funkcja sprawdza na skos"""
+        train = 0
         for i in range(0, 15):
             for j in range(0, i + 1):
                 if self._BOARD[i - j][j] == self._current_player:
                     train += 1
                     if train == 5:
-                        win = 1
-                        break
+                        return self.VICTORY
                 else:
                     train = 0
             train = 0
+        return self.GOING_ON
 
+    def check_method_4(self):
+        """Funkcja sprawdza na skos"""
+        train = 0
         for j in range(1, 15):
             for i in range(0, 15 - j):
                 if self._BOARD[14 - i][j + i] == self._current_player:
                     train += 1
                     if train == 5:
-                        win = 1
-                        break
+                        return self.VICTORY
                 else:
                     train = 0
             train = 0
+        return self.GOING_ON
 
+    def check_method_5(self):
+        """Funkcja sprawdza na skos"""
+        train = 0
         for i in range(0, 15):
             for j in range(0, i + 1):
                 if self._BOARD[i - j][14 - j] == self._current_player:
                     train += 1
                     if train == 5:
-                        win = 1
-                        break
+                        return self.VICTORY
                 else:
                     train = 0
             train = 0
+        return self.GOING_ON
 
+    def check_method_6(self):
+        """Funkcja sprawdza na skos"""
+        train = 0
         for j in range(0, 14):
             for i in range(0, j + 1):
                 if self._BOARD[14 - i][j - i] == self._current_player:
                     train += 1
                     if train == 5:
-                        win = 1
-                        break
+                        return self.VICTORY
                 else:
                     train = 0
             train = 0
+        return self.GOING_ON
 
-        if win == 1:
+    def status_check(self):
+        """
+        Funkcja sprawdzająca stan planszy/gry
+        (Wygrana/Remis/Nadal trwa)
+        """
+        game_status = self.check_method_1()
+        if game_status == self.GOING_ON:
+            game_status = self.check_method_2()
+            if game_status == self.GOING_ON:
+                game_status = self.check_method_3()
+                if game_status == self.GOING_ON:
+                    game_status = self.check_method_4()
+                    if game_status == self.GOING_ON:
+                        game_status = self.check_method_5()
+                        if game_status == self.GOING_ON:
+                            game_status = self.check_method_6()
+
+        if game_status == self.VICTORY:
             if self._current_player == self._BLACK:
                 self._status = self._BLACK_WON
             else:
                 self._status = self._WHITE_WON
-        elif draw == 1:
+        elif game_status == self.DRAW:
             self._status = self._DRAW
 
     def player_swap(self):
