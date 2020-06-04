@@ -1,8 +1,9 @@
-from myexception import *
+"""Moduł zawierający klasę MyGame do obsługi logiki gry"""
+import myexception as ex
 
 
 class MyGame:
-
+    """Klasa obsługująca logikę gry"""
     # Plansza i gracze
     _BOARD_SIZE = 15
     _BOARD = [['.' for x in range(15)] for y in range(15)]
@@ -22,31 +23,38 @@ class MyGame:
         self._output_info = self._status
 
     def player_move(self, wspolrzedne: str):
+        """Funkcja wprowadza współrzędne podane przez gracza na planszę"""
         if len(wspolrzedne) > 3:
             # Exception
-            raise BadCoordinatesException()
-        else:
-            if len(wspolrzedne) == 3:
-                x = int(wspolrzedne[1:3]) - 1  # Tutaj wyskakuje błąd jeśli podamy literę zamiast liczbę
-            elif len(wspolrzedne) == 2:
-                x = int(wspolrzedne[1]) - 1  # Tutaj wyskakuje błąd jeśli podamy literę zamiast liczbę
-            else:
-                # Exception
-                raise BadCoordinatesException()
-            y = ord(wspolrzedne[0]) - ord('a')
-            if not (0 <= x <= 14) or not (0 <= y <= 14):
-                # Exception
-                raise BadCoordinatesException()
-            if self._BOARD[x][y] != '.':
-                # Exception
-                raise FieldOccupiedException()
+            raise ex.BadCoordinatesException()
 
-            self._BOARD[x][y] = self._current_player
+        if len(wspolrzedne) == 3:
+            # Tutaj wyskakuje błąd jeśli podamy literę zamiast liczbę
+            x_coordinate = int(wspolrzedne[1:3]) - 1
+        elif len(wspolrzedne) == 2:
+            # Tutaj wyskakuje błąd jeśli podamy literę zamiast liczbę
+            x_coordinate = int(wspolrzedne[1]) - 1
+        else:
+            # Exception
+            raise ex.BadCoordinatesException()
+        y_coordinate = ord(wspolrzedne[0]) - ord('a')
+        if not (0 <= x_coordinate <= 14) or not (0 <= y_coordinate <= 14):
+            # Exception
+            raise ex.BadCoordinatesException()
+        if self._BOARD[x_coordinate][y_coordinate] != '.':
+            # Exception
+            raise ex.FieldOccupiedException()
+
+        self._BOARD[x_coordinate][y_coordinate] = self._current_player
 
     def ai_move(self):
-        pass
+        """Funkcja AI gry"""
 
     def status_check(self):
+        """
+        Funkcja sprawdzająca stan planszy/gry
+        Czy wygrana/przegrana/remis/kontynuacja
+        """
         train = 0
         win = 0
         draw = 1
@@ -130,55 +138,64 @@ class MyGame:
             self._status = self._DRAW
 
     def player_swap(self):
+        """Zamiana aktualnego gracza"""
         if self._current_player == self._BLACK:
             self._current_player = self._WHITE
         else:
             self._current_player = self._BLACK
 
     def new_game(self):
+        """Powrót do startowego stanu gry"""
         self._current_player = self._BLACK
         self._output_info = self._PLAY
         self._status = self._PLAY
-        self._BOARD = [[self._EMPTY for x in range(self._BOARD_SIZE)] for y in range(self._BOARD_SIZE)] #############
+        self._BOARD = [[self._EMPTY for x in range(self._BOARD_SIZE)]
+                       for y in range(self._BOARD_SIZE)]
 
     def get_board_size(self):
+        """Zwraca rozmiar planszy"""
         return self._BOARD_SIZE
 
     def get_board(self):
+        """Zwraca planszę"""
         return self._BOARD
 
     def get_status(self):
+        """Zwraca status gry"""
         return self._status
 
     def get_current_player(self):
+        """Zwraca aktualnego gracza"""
         return self._current_player
 
     def get_output_info(self):
+        """Zwraca informację z logiki gry"""
         return self._output_info
 
     def play(self, wspolrzedne: str):
+        """Główna funkcja gry"""
         try:
             if self.get_status() != self._PLAY:
                 # Exception
-                raise GameOverException()
+                raise ex.GameOverException()
             self.player_move(wspolrzedne)
             self.status_check()
             # Zakomentować jeśli PvP
             if self.get_status() != self._PLAY:
                 # Exception
-                raise GameOverException()
+                raise ex.GameOverException()
             self.player_swap()
             self.ai_move()
             self.status_check()
             #
             self.player_swap()
-        except BadCoordinatesException as e:
-            self._output_info = f'{e.print_message()} {self.get_status()}'
-        except FieldOccupiedException as e:
-            self._output_info = f'{e.print_message()} {self.get_status()}'
-        except GameOverException as e:
-            self._output_info = f'{e.print_message()} {self.get_status()}'
-        except UndefinedException as e:
-            self._output_info = f'{e.print_message()} {self.get_status()}'
+        except ex.BadCoordinatesException as err:
+            self._output_info = f'{err.print_message()} {self.get_status()}'
+        except ex.FieldOccupiedException as err:
+            self._output_info = f'{err.print_message()} {self.get_status()}'
+        except ex.GameOverException as err:
+            self._output_info = f'{err.print_message()} {self.get_status()}'
+        except ex.UndefinedException as err:
+            self._output_info = f'{err.print_message()} {self.get_status()}'
         else:
             self._output_info = self.get_status()

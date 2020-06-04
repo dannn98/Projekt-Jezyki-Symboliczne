@@ -1,12 +1,14 @@
-from mygame import *
-from mygui import *
-# from myexception import *
+"""Moduł main"""
+import tkinter as tk
+import mygame
+import mygui
 
 
 def main():
-    game = MyGame()
-    root = Tk()
-    MyGUI(root, game)
+    """Główna funkcja main"""
+    game = mygame.MyGame()
+    root = tk.Tk()
+    mygui.MyGUI(root, game)
     root.mainloop()
 
 
