@@ -1,5 +1,7 @@
 """Moduł zawierający klasę MyGame do obsługi logiki gry"""
 import myexception as ex
+import random
+import copy
 
 
 class MyGame:
@@ -10,6 +12,7 @@ class MyGame:
     _EMPTY = '.'
     _BLACK = 'X'
     _WHITE = 'O'
+    _GREEN = 'M'
 
     # Statusy gry
     GOING_ON, VICTORY, DRAW = range(3)
@@ -48,8 +51,171 @@ class MyGame:
 
         self._BOARD[x_coordinate][y_coordinate] = self._current_player
 
+    def ai_move_table(self):
+        move_table = [[self._EMPTY for x in range(15)] for y in range(15)]
+        for i in range(self._BOARD_SIZE):
+            for j in range(self._BOARD_SIZE):
+                if self._BOARD[i][j] != self._EMPTY:
+                    move_table[i][j] = self._BOARD[i][j]
+                    if i != 0:
+                        if j != 0:
+                            if self._BOARD[i - 1][j - 1] == self._EMPTY:
+                                move_table[i - 1][j - 1] = self._GREEN
+                        if self._BOARD[i - 1][j] == self._EMPTY:
+                            move_table[i - 1][j] = self._GREEN
+                        if j != 14:
+                            if self._BOARD[i - 1][j + 1] == self._EMPTY:
+                                move_table[i - 1][j + 1] = self._GREEN
+                    if j != 0:
+                        if self._BOARD[i][j - 1] == self._EMPTY:
+                            move_table[i][j - 1] = self._GREEN
+                    if j != 14:
+                        if self._BOARD[i][j + 1] == self._EMPTY:
+                            move_table[i][j + 1] = self._GREEN
+                    if i != 14:
+                        if j != 0:
+                            if self._BOARD[i + 1][j - 1] == self._EMPTY:
+                                move_table[i + 1][j - 1] = self._GREEN
+                        if self._BOARD[i + 1][j] == self._EMPTY:
+                            move_table[i + 1][j] = self._GREEN
+                        if j != 14:
+                            if self._BOARD[i + 1][j + 1] == self._EMPTY:
+                                move_table[i + 1][j + 1] = self._GREEN
+
+        return move_table
+
+    def evaluation(self, move_table: []):
+        return random.randint(-3, 3)
+
+    def minmax(self, move_table: [], depth: int, maximizing_player: bool):
+        self.player_swap()
+
+        if depth == 0:
+            return self.evaluation(move_table)
+
+        values = []
+        if maximizing_player:
+            values.append(-10000)
+            for i in range(self._BOARD_SIZE):
+                for j in range(self._BOARD_SIZE):
+                    if move_table[i][j] == self._GREEN:
+                        new_move_table = copy.deepcopy(move_table)
+                        new_move_table[i][j] = self._current_player
+                        if i != 0:
+                            if j != 0:
+                                if new_move_table[i - 1][j - 1] == self._EMPTY:
+                                    new_move_table[i - 1][j - 1] = self._GREEN
+                            if new_move_table[i - 1][j] == self._EMPTY:
+                                new_move_table[i - 1][j] = self._GREEN
+                            if j != 14:
+                                if new_move_table[i - 1][j + 1] == self._EMPTY:
+                                    new_move_table[i - 1][j + 1] = self._GREEN
+                        if j != 0:
+                            if new_move_table[i][j - 1] == self._EMPTY:
+                                new_move_table[i][j - 1] = self._GREEN
+                        if j != 14:
+                            if new_move_table[i][j + 1] == self._EMPTY:
+                                new_move_table[i][j + 1] = self._GREEN
+                        if i != 14:
+                            if j != 0:
+                                if new_move_table[i + 1][j - 1] == self._EMPTY:
+                                    new_move_table[i + 1][j - 1] = self._GREEN
+                            if new_move_table[i + 1][j] == self._EMPTY:
+                                new_move_table[i + 1][j] = self._GREEN
+                            if j != 14:
+                                if new_move_table[i + 1][j + 1] == self._EMPTY:
+                                    new_move_table[i + 1][j + 1] = self._GREEN
+                        values.append(self.minmax(new_move_table, depth - 1, False))
+            return max(values)
+        else:
+            values.append(10000)
+            for i in range(self._BOARD_SIZE):
+                for j in range(self._BOARD_SIZE):
+                    if move_table[i][j] == self._GREEN:
+                        new_move_table = copy.deepcopy(move_table)
+                        new_move_table[i][j] = self._current_player
+                        if i != 0:
+                            if j != 0:
+                                if new_move_table[i - 1][j - 1] == self._EMPTY:
+                                    new_move_table[i - 1][j - 1] = self._GREEN
+                            if new_move_table[i - 1][j] == self._EMPTY:
+                                new_move_table[i - 1][j] = self._GREEN
+                            if j != 14:
+                                if new_move_table[i - 1][j + 1] == self._EMPTY:
+                                    new_move_table[i - 1][j + 1] = self._GREEN
+                        if j != 0:
+                            if new_move_table[i][j - 1] == self._EMPTY:
+                                new_move_table[i][j - 1] = self._GREEN
+                        if j != 14:
+                            if new_move_table[i][j + 1] == self._EMPTY:
+                                new_move_table[i][j + 1] = self._GREEN
+                        if i != 14:
+                            if j != 0:
+                                if new_move_table[i + 1][j - 1] == self._EMPTY:
+                                    new_move_table[i + 1][j - 1] = self._GREEN
+                            if new_move_table[i + 1][j] == self._EMPTY:
+                                new_move_table[i + 1][j] = self._GREEN
+                            if j != 14:
+                                if new_move_table[i + 1][j + 1] == self._EMPTY:
+                                    new_move_table[i + 1][j + 1] = self._GREEN
+                        values.append(self.minmax(new_move_table, depth - 1, True))
+            return min(values)
+
     def ai_move(self):
         """Funkcja AI gry"""
+        depth = 2
+        move_table = self.ai_move_table()
+        values = [[10000 for x in range(15)] for y in range(15)]
+
+        for i in range(self._BOARD_SIZE):
+            for j in range(self._BOARD_SIZE):
+                if move_table[i][j] == self._GREEN:
+                    new_move_table = copy.deepcopy(move_table)
+                    new_move_table[i][j] = self._current_player
+                    if i != 0:
+                        if j != 0:
+                            if new_move_table[i - 1][j - 1] == self._EMPTY:
+                                new_move_table[i - 1][j - 1] = self._GREEN
+                        if new_move_table[i - 1][j] == self._EMPTY:
+                            new_move_table[i - 1][j] = self._GREEN
+                        if j != 14:
+                            if new_move_table[i - 1][j + 1] == self._EMPTY:
+                                new_move_table[i - 1][j + 1] = self._GREEN
+                    if j != 0:
+                        if new_move_table[i][j - 1] == self._EMPTY:
+                            new_move_table[i][j - 1] = self._GREEN
+                    if j != 14:
+                        if new_move_table[i][j + 1] == self._EMPTY:
+                            new_move_table[i][j + 1] = self._GREEN
+                    if i != 14:
+                        if j != 0:
+                            if new_move_table[i + 1][j - 1] == self._EMPTY:
+                                new_move_table[i + 1][j - 1] = self._GREEN
+                        if new_move_table[i + 1][j] == self._EMPTY:
+                            new_move_table[i + 1][j] = self._GREEN
+                        if j != 14:
+                            if new_move_table[i + 1][j + 1] == self._EMPTY:
+                                new_move_table[i + 1][j + 1] = self._GREEN
+                    values[i][j] = self.minmax(new_move_table, depth, True)
+
+        for line in values:
+            print(line)
+
+        print("\n\n")
+
+        min_values = []
+        for line in values:
+            min_values.append(min(line))
+        min_value = min(min_values)
+
+        if self._current_player == self._BLACK:
+            self.player_swap()
+
+        for i in range(15):
+            for j in range(15):
+                if values[i][j] == min_value:
+                    self._BOARD[i][j] = self._current_player
+                    return
 
     def check_method_1(self):
         """Funkcja sprawdza w poziomie"""
