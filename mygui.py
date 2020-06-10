@@ -1,11 +1,11 @@
-"""Moduł zawierający klasę MyGUI do obsługi interfejsu graficznego gry"""
+"""Moduł zawierający klasę MyGUI do obsługi interfejsu graficznego gry."""
 import string
 import sys
 import tkinter as tk
 
 
 class MyGUI:
-    """Klasa obsługująca interfejs graficzny"""
+    """Klasa obsługująca interfejs graficzny."""
     def __init__(self, master, game):
         self._master = master
         master.title("Projekt Gomoku")
@@ -42,14 +42,14 @@ class MyGUI:
         self._exit.grid(sticky=tk.W, row=3, column=3, padx=5, pady=5)
 
     def refresh(self, game):
-        """Funkcja odświeżająca pionki oraz informacje na planszy"""
+        """Funkcja odświeżająca pionki oraz informacje na planszy."""
         self._player_str.set(f"Tura gracza: {game.get_current_player()}")
         self._board_str.set(self.print_board(game))
         self._info_str.set(game.get_output_info())
         self._input.delete(0, 'end')
 
     def print_board(self, game):
-        """Funckcja konwertująca tablicę planszy na string do wyświetlenia"""
+        """Funckcja konwertująca tablicę planszy na string do wyświetlenia."""
         str_board = '\n'
         board = game.get_board()
         board_size = game.get_board_size()
@@ -73,16 +73,16 @@ class MyGUI:
 
     def click_submit(self, game):
         """
-        Funkcja uruchamiana za pomocą przycisku submit(Button)
-        Przesyła współrzędne z pola input(Entry) do klasy MyGame
+        Funkcja uruchamiana za pomocą przycisku submit(Button).
+        Przesyła współrzędne z pola input(Entry) do klasy MyGame.
         """
         game.play(self._input.get())
         self.refresh(game)
 
     def click_new_game(self, game):
         """
-        Funkcja uruchamiana za pomocą przycisku new_game(Button)
-        Wywołuje funkcję new_game w klasie MyGame
+        Funkcja uruchamiana za pomocą przycisku new_game(Button).
+        Wywołuje funkcję new_game w klasie MyGame.
         """
         game.new_game()
         self.refresh(game)

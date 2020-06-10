@@ -1,11 +1,11 @@
-"""Moduł zawierający klasę MyGame do obsługi logiki gry"""
+"""Moduł zawierający klasę MyGame do obsługi logiki gry."""
 import myexception as ex
 import random
 import copy
 
 
 class MyGame:
-    """Klasa obsługująca logikę gry"""
+    """Klasa obsługująca logikę gry."""
     # Plansza i gracze
     _BOARD_SIZE = 15
     _BOARD = [['.' for x in range(15)] for y in range(15)]
@@ -27,7 +27,7 @@ class MyGame:
         self._output_info = self._status
 
     def player_move(self, wspolrzedne: str):
-        """Funkcja wprowadza współrzędne podane przez gracza na planszę"""
+        """Funkcja wprowadza współrzędne podane przez gracza na planszę."""
         if len(wspolrzedne) > 3:
             # Exception
             raise ex.BadCoordinatesException()
@@ -52,6 +52,7 @@ class MyGame:
         self._BOARD[x_coordinate][y_coordinate] = self._current_player
 
     def ai_move_table(self):
+        """Funkcja do przygotowania tablicy dla funkcji minmax."""
         move_table = [[self._EMPTY for x in range(15)] for y in range(15)]
         for i in range(self._BOARD_SIZE):
             for j in range(self._BOARD_SIZE):
@@ -85,11 +86,143 @@ class MyGame:
         return move_table
 
     def evaluation(self, move_table: []):
-        return random.randint(-3, 3)
+        """Funkcja oceniająca ruch."""
+        black_best = 0
+        white_best = 0
+        again = False
+        train = 0
+
+        # BLACK
+
+        for i in range(self._BOARD_SIZE):
+            for j in range(self._BOARD_SIZE):
+                if move_table[i][j] == self._BLACK:
+                    train += 1
+                elif move_table[i][j] == self._GREEN:
+                    train += 0.5
+                elif move_table[i][j] == self._WHITE:
+                    if again:
+                        if train < 4.5:
+                            train = 0
+                        else:
+                            black_best = 5
+                    else:
+                        again = True
+                        if train > black_best:
+                            black_best = train
+                        train = 0
+                else:
+                    if train > black_best:
+                        black_best = train
+                    train = 0
+            if again:
+                if train >= 4.5:
+                    black_best = 5
+            else:
+                if train > black_best:
+                    black_best = train
+            again = False
+            train = 0
+
+        for i in range(self._BOARD_SIZE):
+            for j in range(self._BOARD_SIZE):
+                if move_table[j][i] == self._BLACK:
+                    train += 1
+                elif move_table[j][i] == self._GREEN:
+                    train += 0.5
+                elif move_table[j][i] == self._WHITE:
+                    if again:
+                        if train < 4.5:
+                            train = 0
+                        else:
+                            black_best = 5
+                    else:
+                        again = True
+                        if train > black_best:
+                            black_best = train
+                        train = 0
+                else:
+                    if train > black_best:
+                        black_best = train
+                    train = 0
+            if again:
+                if train >= 4.5:
+                    black_best = 5
+            else:
+                if train > black_best:
+                    black_best = train
+            again = False
+            train = 0
+
+        # WHITE
+
+        for i in range(self._BOARD_SIZE):
+            for j in range(self._BOARD_SIZE):
+                if move_table[i][j] == self._WHITE:
+                    train += 1
+                elif move_table[i][j] == self._GREEN:
+                    train += 0.5
+                elif move_table[i][j] == self._BLACK:
+                    if again:
+                        if train < 4.5:
+                            train = 0
+                        else:
+                            white_best = 5
+                    else:
+                        again = True
+                        if train > white_best:
+                            white_best = train
+                        train = 0
+                else:
+                    if train > white_best:
+                        white_best = train
+                    train = 0
+            if again:
+                if train >= 4.5:
+                    white_best = 5
+            else:
+                if train > white_best:
+                    white_best = train
+            again = False
+            train = 0
+
+        for i in range(self._BOARD_SIZE):
+            for j in range(self._BOARD_SIZE):
+                if move_table[j][i] == self._WHITE:
+                    train += 1
+                elif move_table[j][i] == self._GREEN:
+                    train += 0.5
+                elif move_table[j][i] == self._BLACK:
+                    if again:
+                        if train < 4.5:
+                            train = 0
+                        else:
+                            white_best = 5
+                    else:
+                        again = True
+                        if train > white_best:
+                            white_best = train
+                        train = 0
+                else:
+                    if train > white_best:
+                        white_best = train
+                    train = 0
+            if again:
+                if train >= 4.5:
+                    white_best = 5
+            else:
+                if train > white_best:
+                    white_best = train
+            again = False
+            train = 0
+
+        if white_best - 1 > black_best:
+            return white_best * (-1)
+        else:
+            return black_best
 
     def minmax(self, move_table: [], depth: int, maximizing_player: bool):
-        self.player_swap()
-
+        """Algorytm minmax."""
         if depth == 0:
             return self.evaluation(move_table)
 
@@ -100,7 +233,7 @@ class MyGame:
                 for j in range(self._BOARD_SIZE):
                     if move_table[i][j] == self._GREEN:
                         new_move_table = copy.deepcopy(move_table)
-                        new_move_table[i][j] = self._current_player
+                        new_move_table[i][j] = self._BLACK
                         if i != 0:
                             if j != 0:
                                 if new_move_table[i - 1][j - 1] == self._EMPTY:
@@ -133,7 +266,7 @@ class MyGame:
                 for j in range(self._BOARD_SIZE):
                     if move_table[i][j] == self._GREEN:
                         new_move_table = copy.deepcopy(move_table)
-                        new_move_table[i][j] = self._current_player
+                        new_move_table[i][j] = self._WHITE
                         if i != 0:
                             if j != 0:
                                 if new_move_table[i - 1][j - 1] == self._EMPTY:
@@ -162,7 +295,7 @@ class MyGame:
             return min(values)
 
     def ai_move(self):
-        """Funkcja AI gry"""
+        """Funkcja AI gry."""
         depth = 2
         move_table = self.ai_move_table()
         values = [[10000 for x in range(15)] for y in range(15)]
@@ -198,10 +331,10 @@ class MyGame:
                                 new_move_table[i + 1][j + 1] = self._GREEN
                     values[i][j] = self.minmax(new_move_table, depth, True)
 
-        for line in values:
-            print(line)
-
-        print("\n\n")
+        # for line in values:
+        #     print(line)
+        #
+        # print("\n\n")
 
         min_values = []
         for line in values:
@@ -218,7 +351,7 @@ class MyGame:
                     return
 
     def check_method_1(self):
-        """Funkcja sprawdza w poziomie"""
+        """Funkcja sprawdza w poziomie."""
         train = 0
         draw = 1
         for i in range(0, 15):
@@ -239,7 +372,7 @@ class MyGame:
             return self.GOING_ON
 
     def check_method_2(self):
-        """Funkcja sprawdza w pionie"""
+        """Funkcja sprawdza w pionie."""
         train = 0
         for i in range(0, 15):
             for j in range(0, 15):
@@ -253,7 +386,7 @@ class MyGame:
         return self.GOING_ON
 
     def check_method_3(self):
-        """Funkcja sprawdza na skos"""
+        """Funkcja sprawdza na skos."""
         train = 0
         for i in range(0, 15):
             for j in range(0, i + 1):
@@ -267,7 +400,7 @@ class MyGame:
         return self.GOING_ON
 
     def check_method_4(self):
-        """Funkcja sprawdza na skos"""
+        """Funkcja sprawdza na skos."""
         train = 0
         for j in range(1, 15):
             for i in range(0, 15 - j):
@@ -281,7 +414,7 @@ class MyGame:
         return self.GOING_ON
 
     def check_method_5(self):
-        """Funkcja sprawdza na skos"""
+        """Funkcja sprawdza na skos."""
         train = 0
         for i in range(0, 15):
             for j in range(0, i + 1):
@@ -295,7 +428,7 @@ class MyGame:
         return self.GOING_ON
 
     def check_method_6(self):
-        """Funkcja sprawdza na skos"""
+        """Funkcja sprawdza na skos."""
         train = 0
         for j in range(0, 14):
             for i in range(0, j + 1):
@@ -334,14 +467,14 @@ class MyGame:
             self._status = self._DRAW
 
     def player_swap(self):
-        """Zamiana aktualnego gracza"""
+        """Zamiana aktualnego gracza."""
         if self._current_player == self._BLACK:
             self._current_player = self._WHITE
         else:
             self._current_player = self._BLACK
 
     def new_game(self):
-        """Powrót do startowego stanu gry"""
+        """Powrót do startowego stanu gry."""
         self._current_player = self._BLACK
         self._output_info = self._PLAY
         self._status = self._PLAY
@@ -349,27 +482,27 @@ class MyGame:
                        for y in range(self._BOARD_SIZE)]
 
     def get_board_size(self):
-        """Zwraca rozmiar planszy"""
+        """Zwraca rozmiar planszy."""
         return self._BOARD_SIZE
 
     def get_board(self):
-        """Zwraca planszę"""
+        """Zwraca planszę."""
         return self._BOARD
 
     def get_status(self):
-        """Zwraca status gry"""
+        """Zwraca status gry."""
         return self._status
 
     def get_current_player(self):
-        """Zwraca aktualnego gracza"""
+        """Zwraca aktualnego gracza."""
         return self._current_player
 
     def get_output_info(self):
-        """Zwraca informację z logiki gry"""
+        """Zwraca informację z logiki gry."""
         return self._output_info
 
     def play(self, wspolrzedne: str):
-        """Główna funkcja gry"""
+        """Główna funkcja gry."""
         try:
             if self.get_status() != self._PLAY:
                 # Exception
