@@ -1,7 +1,6 @@
 """Moduł zawierający klasę MyGame do obsługi logiki gry."""
-import myexception as ex
-import random
 import copy
+import myexception as ex
 
 
 class MyGame:
@@ -218,8 +217,7 @@ class MyGame:
 
         if white_best - 1 > black_best:
             return white_best * (-1)
-        else:
-            return black_best
+        return black_best
 
     def minmax(self, move_table: [], depth: int, maximizing_player: bool):
         """Algorytm minmax."""
@@ -298,7 +296,7 @@ class MyGame:
         """Funkcja AI gry."""
         depth = 2
         move_table = self.ai_move_table()
-        values = [[10000 for x in range(15)] for y in range(15)]
+        values = [[10000 for x in range(self._BOARD_SIZE)] for y in range(self._BOARD_SIZE)]
 
         for i in range(self._BOARD_SIZE):
             for j in range(self._BOARD_SIZE):
@@ -344,8 +342,8 @@ class MyGame:
         if self._current_player == self._BLACK:
             self.player_swap()
 
-        for i in range(15):
-            for j in range(15):
+        for i in range(self._BOARD_SIZE):
+            for j in range(self._BOARD_SIZE):
                 if values[i][j] == min_value:
                     self._BOARD[i][j] = self._current_player
                     return
@@ -354,8 +352,8 @@ class MyGame:
         """Funkcja sprawdza w poziomie."""
         train = 0
         draw = 1
-        for i in range(0, 15):
-            for j in range(0, 15):
+        for i in range(0, self._BOARD_SIZE):
+            for j in range(0, self._BOARD_SIZE):
                 if self._BOARD[i][j] == self._current_player:
                     train += 1
                     if train == 5:
@@ -368,14 +366,13 @@ class MyGame:
             train = 0
         if draw:
             return self.DRAW
-        else:
-            return self.GOING_ON
+        return self.GOING_ON
 
     def check_method_2(self):
         """Funkcja sprawdza w pionie."""
         train = 0
-        for i in range(0, 15):
-            for j in range(0, 15):
+        for i in range(0, self._BOARD_SIZE):
+            for j in range(0, self._BOARD_SIZE):
                 if self._BOARD[j][i] == self._current_player:
                     train += 1
                     if train == 5:
@@ -388,7 +385,7 @@ class MyGame:
     def check_method_3(self):
         """Funkcja sprawdza na skos."""
         train = 0
-        for i in range(0, 15):
+        for i in range(0, self._BOARD_SIZE):
             for j in range(0, i + 1):
                 if self._BOARD[i - j][j] == self._current_player:
                     train += 1
@@ -402,8 +399,8 @@ class MyGame:
     def check_method_4(self):
         """Funkcja sprawdza na skos."""
         train = 0
-        for j in range(1, 15):
-            for i in range(0, 15 - j):
+        for j in range(1, self._BOARD_SIZE):
+            for i in range(0, self._BOARD_SIZE - j):
                 if self._BOARD[14 - i][j + i] == self._current_player:
                     train += 1
                     if train == 5:
@@ -416,9 +413,9 @@ class MyGame:
     def check_method_5(self):
         """Funkcja sprawdza na skos."""
         train = 0
-        for i in range(0, 15):
+        for i in range(0, self._BOARD_SIZE):
             for j in range(0, i + 1):
-                if self._BOARD[i - j][14 - j] == self._current_player:
+                if self._BOARD[i - j][self._BOARD_SIZE - 1 - j] == self._current_player:
                     train += 1
                     if train == 5:
                         return self.VICTORY
@@ -430,9 +427,9 @@ class MyGame:
     def check_method_6(self):
         """Funkcja sprawdza na skos."""
         train = 0
-        for j in range(0, 14):
+        for j in range(0, self._BOARD_SIZE - 1):
             for i in range(0, j + 1):
-                if self._BOARD[14 - i][j - i] == self._current_player:
+                if self._BOARD[self._BOARD_SIZE - 1 - i][j - i] == self._current_player:
                     train += 1
                     if train == 5:
                         return self.VICTORY
