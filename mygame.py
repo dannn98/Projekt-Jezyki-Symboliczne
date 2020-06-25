@@ -41,7 +41,7 @@ class MyGame:
             # Exception
             raise ex.BadCoordinatesException()
         y_coordinate = ord(wspolrzedne[0]) - ord('a')
-        if not (0 <= x_coordinate <= 14) or not (0 <= y_coordinate <= 14):
+        if not (0 <= x_coordinate < self._BOARD_SIZE) or not (0 <= y_coordinate < self._BOARD_SIZE):
             # Exception
             raise ex.BadCoordinatesException()
         if self._BOARD[x_coordinate][y_coordinate] != '.':
@@ -63,22 +63,22 @@ class MyGame:
                                 move_table[i - 1][j - 1] = self._GREEN
                         if self._BOARD[i - 1][j] == self._EMPTY:
                             move_table[i - 1][j] = self._GREEN
-                        if j != 14:
+                        if j != self._BOARD_SIZE - 1:
                             if self._BOARD[i - 1][j + 1] == self._EMPTY:
                                 move_table[i - 1][j + 1] = self._GREEN
                     if j != 0:
                         if self._BOARD[i][j - 1] == self._EMPTY:
                             move_table[i][j - 1] = self._GREEN
-                    if j != 14:
+                    if j != self._BOARD_SIZE - 1:
                         if self._BOARD[i][j + 1] == self._EMPTY:
                             move_table[i][j + 1] = self._GREEN
-                    if i != 14:
+                    if i != self._BOARD_SIZE - 1:
                         if j != 0:
                             if self._BOARD[i + 1][j - 1] == self._EMPTY:
                                 move_table[i + 1][j - 1] = self._GREEN
                         if self._BOARD[i + 1][j] == self._EMPTY:
                             move_table[i + 1][j] = self._GREEN
-                        if j != 14:
+                        if j != self._BOARD_SIZE - 1:
                             if self._BOARD[i + 1][j + 1] == self._EMPTY:
                                 move_table[i + 1][j + 1] = self._GREEN
 
@@ -238,22 +238,22 @@ class MyGame:
                                     new_move_table[i - 1][j - 1] = self._GREEN
                             if new_move_table[i - 1][j] == self._EMPTY:
                                 new_move_table[i - 1][j] = self._GREEN
-                            if j != 14:
+                            if j != self._BOARD_SIZE - 1:
                                 if new_move_table[i - 1][j + 1] == self._EMPTY:
                                     new_move_table[i - 1][j + 1] = self._GREEN
                         if j != 0:
                             if new_move_table[i][j - 1] == self._EMPTY:
                                 new_move_table[i][j - 1] = self._GREEN
-                        if j != 14:
+                        if j != self._BOARD_SIZE - 1:
                             if new_move_table[i][j + 1] == self._EMPTY:
                                 new_move_table[i][j + 1] = self._GREEN
-                        if i != 14:
+                        if i != self._BOARD_SIZE - 1:
                             if j != 0:
                                 if new_move_table[i + 1][j - 1] == self._EMPTY:
                                     new_move_table[i + 1][j - 1] = self._GREEN
                             if new_move_table[i + 1][j] == self._EMPTY:
                                 new_move_table[i + 1][j] = self._GREEN
-                            if j != 14:
+                            if j != self._BOARD_SIZE - 1:
                                 if new_move_table[i + 1][j + 1] == self._EMPTY:
                                     new_move_table[i + 1][j + 1] = self._GREEN
                         values.append(self.minmax(new_move_table, depth - 1, False))
@@ -271,22 +271,22 @@ class MyGame:
                                     new_move_table[i - 1][j - 1] = self._GREEN
                             if new_move_table[i - 1][j] == self._EMPTY:
                                 new_move_table[i - 1][j] = self._GREEN
-                            if j != 14:
+                            if j != self._BOARD_SIZE - 1:
                                 if new_move_table[i - 1][j + 1] == self._EMPTY:
                                     new_move_table[i - 1][j + 1] = self._GREEN
                         if j != 0:
                             if new_move_table[i][j - 1] == self._EMPTY:
                                 new_move_table[i][j - 1] = self._GREEN
-                        if j != 14:
+                        if j != self._BOARD_SIZE - 1:
                             if new_move_table[i][j + 1] == self._EMPTY:
                                 new_move_table[i][j + 1] = self._GREEN
-                        if i != 14:
+                        if i != self._BOARD_SIZE - 1:
                             if j != 0:
                                 if new_move_table[i + 1][j - 1] == self._EMPTY:
                                     new_move_table[i + 1][j - 1] = self._GREEN
                             if new_move_table[i + 1][j] == self._EMPTY:
                                 new_move_table[i + 1][j] = self._GREEN
-                            if j != 14:
+                            if j != self._BOARD_SIZE - 1:
                                 if new_move_table[i + 1][j + 1] == self._EMPTY:
                                     new_move_table[i + 1][j + 1] = self._GREEN
                         values.append(self.minmax(new_move_table, depth - 1, True))
@@ -309,22 +309,22 @@ class MyGame:
                                 new_move_table[i - 1][j - 1] = self._GREEN
                         if new_move_table[i - 1][j] == self._EMPTY:
                             new_move_table[i - 1][j] = self._GREEN
-                        if j != 14:
+                        if j != self._BOARD_SIZE - 1:
                             if new_move_table[i - 1][j + 1] == self._EMPTY:
                                 new_move_table[i - 1][j + 1] = self._GREEN
                     if j != 0:
                         if new_move_table[i][j - 1] == self._EMPTY:
                             new_move_table[i][j - 1] = self._GREEN
-                    if j != 14:
+                    if j != self._BOARD_SIZE - 1:
                         if new_move_table[i][j + 1] == self._EMPTY:
                             new_move_table[i][j + 1] = self._GREEN
-                    if i != 14:
+                    if i != self._BOARD_SIZE - 1:
                         if j != 0:
                             if new_move_table[i + 1][j - 1] == self._EMPTY:
                                 new_move_table[i + 1][j - 1] = self._GREEN
                         if new_move_table[i + 1][j] == self._EMPTY:
                             new_move_table[i + 1][j] = self._GREEN
-                        if j != 14:
+                        if j != self._BOARD_SIZE - 1:
                             if new_move_table[i + 1][j + 1] == self._EMPTY:
                                 new_move_table[i + 1][j + 1] = self._GREEN
                     values[i][j] = self.minmax(new_move_table, depth, True)
@@ -401,7 +401,7 @@ class MyGame:
         train = 0
         for j in range(1, self._BOARD_SIZE):
             for i in range(0, self._BOARD_SIZE - j):
-                if self._BOARD[14 - i][j + i] == self._current_player:
+                if self._BOARD[self._BOARD_SIZE - 1 - i][j + i] == self._current_player:
                     train += 1
                     if train == 5:
                         return self.VICTORY
@@ -515,13 +515,10 @@ class MyGame:
             self.status_check()
             #
             self.player_swap()
-        except ex.BadCoordinatesException as err:
-            self._output_info = f'{err.print_message()} {self.get_status()}'
-        except ex.FieldOccupiedException as err:
-            self._output_info = f'{err.print_message()} {self.get_status()}'
-        except ex.GameOverException as err:
-            self._output_info = f'{err.print_message()} {self.get_status()}'
-        except ex.UndefinedException as err:
+        except (ex.BadCoordinatesException,
+                ex.FieldOccupiedException,
+                ex.GameOverException,
+                ex.UndefinedException) as err:
             self._output_info = f'{err.print_message()} {self.get_status()}'
         else:
             self._output_info = self.get_status()

@@ -50,3 +50,7 @@ class TestMyGame(unittest.TestCase):
         self.game.status_check()
 
         self.assertEqual(self.game._status, "CZARNE WYGRAŁY!")
+
+
+if __name__ == '__main__':
+    unittest.main()
